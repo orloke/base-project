@@ -1,0 +1,20 @@
+#!/bin/sh
+
+echo "Rodando build do Next.js antes do commit..."
+npx lint-staged || {
+  echo "❌ Lint/Prettier falharam! Corrija os erros antes de commitar."
+  exit 1
+}
+
+npm run build || {
+  echo "❌ Build falhou! Corrija os erros antes de commitar."
+  exit 1
+}
+
+# npm test || {
+#   echo "❌ Testes falharam! Corrija os erros antes de commitar."
+#   exit 1
+# }
+
+
+echo "✅ Tudo certo! Continuando o commit..."

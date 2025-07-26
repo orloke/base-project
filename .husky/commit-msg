@@ -1,0 +1,18 @@
+#!/bin/sh
+
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+VALID_TYPES="feat|fix|docs|style|refactor|perf|test|ci|chore|revert"
+PATTERN="^($VALID_TYPES): .+"
+
+if ! echo "$COMMIT_MSG" | grep -Eq "$PATTERN"; then
+  echo "❌ Commit inválido!"
+  echo "💡 Use o formato: <tipo>: descrição"
+  echo "💡 Exemplo válido: feat: criar botão de login"
+  echo ""
+  echo "🔁 Tipos permitidos: $VALID_TYPES"
+  exit 1
+fi
+
+echo "✅ Commit válido!"

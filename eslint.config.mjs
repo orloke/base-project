@@ -1,3 +1,4 @@
+// eslint.config.js
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
@@ -9,8 +10,22 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-];
+// ✅ Corrigir aqui usando import() assíncrono
+const eslintConfig = async () => {
+  const prettierPlugin = await import("eslint-plugin-prettier");
 
-export default eslintConfig;
+  return [
+    ...compat.extends("next/core-web-vitals", "next/typescript"),
+
+    {
+      plugins: {
+        prettier: prettierPlugin.default, // Aqui é o ponto principal
+      },
+      rules: {
+        "prettier/prettier": "error",
+      },
+    },
+  ];
+};
+
+export default eslintConfig();
