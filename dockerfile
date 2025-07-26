@@ -3,17 +3,21 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copie package.json e package-lock.json (ou yarn.lock)
-COPY package.json yarn.lock ./
+# Copie package.json e package-lock.json
+# Se você não tem package-lock.json, pode remover ele daqui,
+# mas geralmente é boa prática tê-lo para builds consistentes.
+COPY package.json package-lock.json ./
 
-# Instale as dependências
-RUN yarn install --frozen-lockfile
+# Instale as dependências com npm
+RUN npm ci # 'npm ci' é melhor para CI/CD pois garante uma instalação limpa baseada no package-lock.json
+# Ou se preferir 'npm install'
+# RUN npm install
 
 # Copie o restante do código
 COPY . .
 
 # Construa o aplicativo Next.js
-RUN yarn build
+RUN npm run build # Comando para construir seu aplicativo Next.js
 
 # Estágio de produção
 FROM node:20-alpine AS runner
@@ -28,12 +32,9 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
-
-# Se você usa alguma variável de ambiente específica para o Next.js no runtime,
-# certifique-se de passá-las aqui ou no Cloud Run.
-# Exemplo: ENV NEXT_PUBLIC_API_URL=https://api.example.com
+COPY --from=builder /app/package-lock.json ./package-lock.json
 
 EXPOSE 3000
 
-# Comando para iniciar o aplicativo Next.js
+# Comando para iniciar o aplicativo Next.js com npm
 CMD ["npm", "start"]
