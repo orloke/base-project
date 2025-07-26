@@ -3,11 +3,10 @@ name: Deploy to Cloud Run
 on:
   push:
     branches:
-      - main  # Altere aqui se usar outra branch
+      - main  # ou sua branch principal
 
 jobs:
   deploy:
-    name: Deploy to Cloud Run
     runs-on: ubuntu-latest
 
     steps:
@@ -27,5 +26,4 @@ jobs:
             --source . \
             --region us-central1 \
             --platform managed \
-            --project ${{ secrets.GCP_PROJECT_ID }} \
             --allow-unauthenticated
