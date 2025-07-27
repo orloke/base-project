@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Instale as dependências com npm
-RUN npm ci # 'npm ci' é melhor para CI/CD pois garante uma instalação limpa baseada no package-lock.json
+RUN npm ci
 # Ou se preferir 'npm install'
 # RUN npm install
 
@@ -17,7 +17,7 @@ RUN npm ci # 'npm ci' é melhor para CI/CD pois garante uma instalação limpa b
 COPY . .
 
 # Construa o aplicativo Next.js
-RUN npm run build # Comando para construir seu aplicativo Next.js
+RUN npm run build
 
 # Estágio de produção
 FROM node:20-alpine AS runner
